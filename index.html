@@ -366,6 +366,31 @@
     transition: width 0.5s;
   }
 
+  /* ── BOTÕES DE AÇÃO NOS CARTÕES ── */
+  .card-actions-overlay {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 6px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .credit-card:hover .card-actions-overlay { opacity: 1; }
+  .card-action-btn {
+    background: rgba(0,0,0,0.35);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 13px;
+    padding: 5px 8px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s;
+  }
+  .card-action-btn:hover { background: rgba(0,0,0,0.6); }
+  .card-action-del:hover { background: rgba(220,38,38,0.7); }
+
   /* ── ESTRATÉGIA ── */
   .strategy-card {
     background: var(--text);
@@ -712,8 +737,8 @@
   <div class="tab-panel" id="tab-cartoes">
     <div class="section-card" style="margin-bottom:20px">
       <div class="section-header">
-        <div class="section-title"><span class="section-icon">💳</span> Meus Cartões (4)</div>
-        <button class="btn-add" onclick="openModal('cartao')">+ Editar Cartão</button>
+        <div class="section-title"><span class="section-icon">💳</span> Meus Cartões (<span id="card-count">4</span>)</div>
+        <button class="btn-add" onclick="openModal('cartao-novo')">+ Adicionar Cartão</button>
       </div>
       <div class="section-body">
         <div class="cards-grid" id="cards-grid"></div>
@@ -806,45 +831,6 @@
       </div>
     </div>
 
-    <!-- DICAS EXTRAS -->
-    <div class="section-card mt-4">
-      <div class="section-header">
-        <div class="section-title"><span class="section-icon">💡</span> Dicas para Renda Irregular</div>
-      </div>
-      <div class="section-body">
-        <div class="item-list">
-          <div class="item-row">
-            <div class="item-badge" style="background:#DCFCE7">🌱</div>
-            <div class="item-info">
-              <div class="item-name">Salário-base (clínica)</div>
-              <div class="item-sub">Use para pagar TODAS as contas fixas. Os bicos são extra.</div>
-            </div>
-          </div>
-          <div class="item-row">
-            <div class="item-badge" style="background:#FEF3C7">🎯</div>
-            <div class="item-info">
-              <div class="item-name">Bicos (dias alternados)</div>
-              <div class="item-sub">50% vai direto para poupança. 50% é para gastos livres ou dívidas.</div>
-            </div>
-          </div>
-          <div class="item-row">
-            <div class="item-badge" style="background:#DBEAFE">🛡️</div>
-            <div class="item-info">
-              <div class="item-name">Reserva de emergência</div>
-              <div class="item-sub">Meta: 3 meses de contas fixas guardados. Só mexe em emergência real.</div>
-            </div>
-          </div>
-          <div class="item-row">
-            <div class="item-badge" style="background:#FCE7F3">❌</div>
-            <div class="item-info">
-              <div class="item-name">Evite parcelar no cartão acima de 3x</div>
-              <div class="item-sub">Parcelamentos longos travam sua renda futura e causam sufoco no final do mês.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div><!-- /main -->
 
@@ -896,46 +882,73 @@
   </div>
 </div>
 
-<!-- Modal Cartão -->
-<div class="modal-overlay" id="modal-cartao">
+<!-- Modal Adicionar Cartão -->
+<div class="modal-overlay" id="modal-cartao-novo">
   <div class="modal">
-    <h3>💳 Configurar Cartão</h3>
-    <div class="form-group">
-      <label>Qual cartão?</label>
-      <select id="card-idx">
-        <option value="0">Cartão 1 (Azul)</option>
-        <option value="1">Cartão 2 (Roxo)</option>
-        <option value="2">Cartão 3 (Vermelho)</option>
-        <option value="3">Cartão 4 (Verde)</option>
-      </select>
-    </div>
+    <h3>💳 Novo Cartão</h3>
     <div class="form-group">
       <label>Nome do Banco/Cartão</label>
-      <input type="text" id="card-nome" placeholder="Ex: Nubank, Itaú, Bradesco...">
+      <input type="text" id="cn-nome" placeholder="Ex: Nubank, Itaú, Bradesco...">
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Limite Total (R$)</label>
-        <input type="number" id="card-limite" placeholder="0,00" step="0.01">
+        <input type="number" id="cn-limite" placeholder="0,00" step="0.01">
       </div>
       <div class="form-group">
         <label>Fatura Atual (R$)</label>
-        <input type="number" id="card-usado" placeholder="0,00" step="0.01">
+        <input type="number" id="cn-usado" placeholder="0,00" step="0.01">
       </div>
     </div>
     <div class="form-row">
       <div class="form-group">
         <label>Dia do Fechamento</label>
-        <input type="number" id="card-fechamento" placeholder="Ex: 20" min="1" max="31">
+        <input type="number" id="cn-fechamento" placeholder="Ex: 20" min="1" max="31">
       </div>
       <div class="form-group">
         <label>Dia do Vencimento</label>
-        <input type="number" id="card-vencimento" placeholder="Ex: 5" min="1" max="31">
+        <input type="number" id="cn-vencimento" placeholder="Ex: 5" min="1" max="31">
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeModal('cartao')">Cancelar</button>
-      <button class="btn-primary" onclick="salvarCartao()">Salvar Cartão</button>
+      <button class="btn-secondary" onclick="closeModal('cartao-novo')">Cancelar</button>
+      <button class="btn-primary" onclick="adicionarCartao()">Adicionar Cartão</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Cartão -->
+<div class="modal-overlay" id="modal-cartao-editar">
+  <div class="modal">
+    <h3>✏️ Editar Cartão</h3>
+    <input type="hidden" id="ce-idx">
+    <div class="form-group">
+      <label>Nome do Banco/Cartão</label>
+      <input type="text" id="ce-nome" placeholder="Ex: Nubank, Itaú, Bradesco...">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Limite Total (R$)</label>
+        <input type="number" id="ce-limite" placeholder="0,00" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Fatura Atual (R$)</label>
+        <input type="number" id="ce-usado" placeholder="0,00" step="0.01">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dia do Fechamento</label>
+        <input type="number" id="ce-fechamento" placeholder="Ex: 20" min="1" max="31">
+      </div>
+      <div class="form-group">
+        <label>Dia do Vencimento</label>
+        <input type="number" id="ce-vencimento" placeholder="Ex: 5" min="1" max="31">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('cartao-editar')">Cancelar</button>
+      <button class="btn-primary" onclick="salvarEdicaoCartao()">Salvar Alterações</button>
     </div>
   </div>
 </div>
@@ -1098,20 +1111,48 @@ function salvarConta() {
   renderAll();
 }
 
-function salvarCartao() {
-  const idx = parseInt(document.getElementById('card-idx').value);
-  const nome = document.getElementById('card-nome').value.trim();
-  const limite = parseFloat(document.getElementById('card-limite').value) || cartoes[idx].limite;
-  const usado = parseFloat(document.getElementById('card-usado').value) || 0;
-  const fechamento = parseInt(document.getElementById('card-fechamento').value) || cartoes[idx].fechamento;
-  const vencimento = parseInt(document.getElementById('card-vencimento').value) || cartoes[idx].vencimento;
-  if (nome) cartoes[idx].nome = nome;
-  cartoes[idx].limite = limite;
-  cartoes[idx].usado = usado;
-  cartoes[idx].fechamento = fechamento;
-  cartoes[idx].vencimento = vencimento;
-  ['card-nome','card-limite','card-usado','card-fechamento','card-vencimento'].forEach(id => document.getElementById(id).value = '');
-  closeModal('cartao');
+function adicionarCartao() {
+  const nome = document.getElementById('cn-nome').value.trim();
+  const limite = parseFloat(document.getElementById('cn-limite').value) || 1000;
+  const usado = parseFloat(document.getElementById('cn-usado').value) || 0;
+  const fechamento = parseInt(document.getElementById('cn-fechamento').value) || 20;
+  const vencimento = parseInt(document.getElementById('cn-vencimento').value) || 5;
+  if (!nome) return alert('Informe o nome do cartão.');
+  cartoes.push({ nome, limite, usado, fechamento, vencimento });
+  ['cn-nome','cn-limite','cn-usado','cn-fechamento','cn-vencimento'].forEach(id => document.getElementById(id).value = '');
+  closeModal('cartao-novo');
+  renderAll();
+}
+
+function abrirEdicaoCartao(i) {
+  const c = cartoes[i];
+  document.getElementById('ce-idx').value = i;
+  document.getElementById('ce-nome').value = c.nome;
+  document.getElementById('ce-limite').value = c.limite;
+  document.getElementById('ce-usado').value = c.usado;
+  document.getElementById('ce-fechamento').value = c.fechamento;
+  document.getElementById('ce-vencimento').value = c.vencimento;
+  document.getElementById('modal-cartao-editar').classList.add('open');
+}
+
+function salvarEdicaoCartao() {
+  const i = parseInt(document.getElementById('ce-idx').value);
+  const nome = document.getElementById('ce-nome').value.trim();
+  const limite = parseFloat(document.getElementById('ce-limite').value) || cartoes[i].limite;
+  const usado = parseFloat(document.getElementById('ce-usado').value) || 0;
+  const fechamento = parseInt(document.getElementById('ce-fechamento').value) || cartoes[i].fechamento;
+  const vencimento = parseInt(document.getElementById('ce-vencimento').value) || cartoes[i].vencimento;
+  if (!nome) return alert('Informe o nome do cartão.');
+  cartoes[i] = { nome, limite, usado, fechamento, vencimento };
+  closeModal('cartao-editar');
+  renderAll();
+}
+
+function excluirCartao(i) {
+  if (!confirm(`Excluir o cartão "${cartoes[i].nome}"? Os gastos lançados nele também serão removidos.`)) return;
+  faturas = faturas.filter(f => f.cidx !== i);
+  faturas.forEach(f => { if (f.cidx > i) f.cidx--; });
+  cartoes.splice(i, 1);
   renderAll();
 }
 
@@ -1320,10 +1361,23 @@ function statusLabel(s) {
 
 function renderCartoes() {
   const grid = document.getElementById('cards-grid');
+  const countEl = document.getElementById('card-count');
+  if (countEl) countEl.textContent = cartoes.length;
+
+  if (!cartoes.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">💳</div><p>Nenhum cartão cadastrado.<br>Clique em "+ Adicionar Cartão" para começar.</p></div>`;
+    return;
+  }
+
   grid.innerHTML = cartoes.map((c,i) => {
     const pct = c.limite ? Math.min(100, Math.round((c.usado/c.limite)*100)) : 0;
+    const colorClass = CARD_CLASSES[i % CARD_CLASSES.length];
     return `
-      <div class="credit-card ${CARD_CLASSES[i]}">
+      <div class="credit-card ${colorClass}" style="position:relative">
+        <div class="card-actions-overlay">
+          <button class="card-action-btn" onclick="abrirEdicaoCartao(${i})" title="Editar">✏️</button>
+          <button class="card-action-btn card-action-del" onclick="excluirCartao(${i})" title="Excluir">🗑️</button>
+        </div>
         <div class="card-top">
           <div class="card-name">${c.nome}</div>
           <div class="card-chip">💳</div>

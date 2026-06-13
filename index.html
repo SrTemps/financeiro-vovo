@@ -4,6 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meu Controle Financeiro</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1C1917">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Financeiro">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
@@ -43,7 +53,6 @@
     min-height: 100vh;
   }
 
-  /* ── HEADER ── */
   .header {
     background: var(--text);
     color: white;
@@ -54,281 +63,92 @@
     flex-wrap: wrap;
     gap: 12px;
   }
-  .header-left h1 {
-    font-size: 18px;
-    font-weight: 600;
-    letter-spacing: -0.3px;
-  }
-  .header-left p {
-    font-size: 13px;
-    opacity: 0.6;
-    margin-top: 2px;
-  }
+  .header-left h1 { font-size: 18px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-left p { font-size: 13px; opacity: 0.6; margin-top: 2px; }
   .month-nav {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 8px;
-    padding: 8px 14px;
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.1); border-radius: 8px; padding: 8px 14px;
   }
-  .month-nav button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-  }
+  .month-nav button { background: none; border: none; color: white; cursor: pointer; font-size: 16px; opacity: 0.7; transition: opacity 0.2s; }
   .month-nav button:hover { opacity: 1; }
-  .month-nav span {
-    font-size: 14px;
-    font-weight: 500;
-    min-width: 100px;
-    text-align: center;
-  }
+  .month-nav span { font-size: 14px; font-weight: 500; min-width: 100px; text-align: center; }
 
-  /* ── LAYOUT ── */
-  .main {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 24px 16px;
-  }
+  .main { max-width: 1100px; margin: 0 auto; padding: 24px 16px; }
 
-  /* ── RESUMO TOPO ── */
   .summary-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 28px;
+    gap: 14px; margin-bottom: 28px;
   }
   .summary-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    padding: 20px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    position: relative;
-    overflow: hidden;
+    background: var(--surface); border-radius: var(--radius); padding: 20px;
+    box-shadow: var(--shadow); border: 1px solid var(--border);
+    position: relative; overflow: hidden;
   }
-  .summary-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
+  .summary-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
   .summary-card.receita::before { background: var(--green); }
   .summary-card.despesa::before { background: var(--red); }
   .summary-card.saldo::before { background: var(--accent); }
   .summary-card.pendente::before { background: var(--amber); }
-  .summary-label {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
-  .summary-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 24px;
-    font-weight: 500;
-    letter-spacing: -0.5px;
-  }
+  .summary-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; }
+  .summary-value { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500; letter-spacing: -0.5px; }
   .summary-card.receita .summary-value { color: var(--green); }
   .summary-card.despesa .summary-value { color: var(--red); }
   .summary-card.saldo .summary-value { color: var(--accent); }
   .summary-card.pendente .summary-value { color: var(--amber); }
-  .summary-sub {
-    font-size: 12px;
-    color: var(--text-light);
-    margin-top: 4px;
-  }
+  .summary-sub { font-size: 12px; color: var(--text-light); margin-top: 4px; }
 
-  /* ── ALERTA URGENTE ── */
   .alerts-box {
-    background: #FFF7ED;
-    border: 1px solid #FED7AA;
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    display: none;
+    background: #FFF7ED; border: 1px solid #FED7AA;
+    border-radius: var(--radius); padding: 16px 20px; margin-bottom: 24px; display: none;
   }
   .alerts-box.visible { display: block; }
-  .alerts-title {
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--amber);
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .alert-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 0;
-    border-bottom: 1px solid #FED7AA;
-    font-size: 13px;
-  }
+  .alerts-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--amber); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .alert-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #FED7AA; font-size: 13px; }
   .alert-item:last-child { border-bottom: none; }
-  .alert-dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--red);
-    flex-shrink: 0;
-  }
+  .alert-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); flex-shrink: 0; }
   .alert-dot.warn { background: var(--amber); }
 
-  /* ── GRID 2 COLUNAS ── */
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
-  }
-  @media (max-width: 700px) {
-    .two-col { grid-template-columns: 1fr; }
-  }
-
-  /* ── SECTION CARD ── */
-  .section-card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-  .section-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--surface2);
-  }
-  .section-title {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+  .section-card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+  .section-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; background: var(--surface2); }
+  .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
   .section-icon { font-size: 15px; }
   .section-body { padding: 16px 20px; }
 
-  /* ── BTN ADD ── */
   .btn-add {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--text);
-    color: white;
-    border: none;
-    border-radius: 6px;
-    padding: 7px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    font-family: inherit;
+    display: flex; align-items: center; gap: 6px;
+    background: var(--text); color: white; border: none; border-radius: 6px;
+    padding: 7px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: opacity 0.2s; font-family: inherit;
   }
   .btn-add:hover { opacity: 0.85; }
 
-  /* ── LISTA ITENS ── */
   .item-list { display: flex; flex-direction: column; gap: 8px; }
   .item-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border);
-    background: var(--bg);
-    transition: background 0.15s;
-    font-size: 13px;
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    background: var(--bg); transition: background 0.15s; font-size: 13px;
   }
   .item-row:hover { background: var(--surface2); }
-  .item-badge {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
+  .item-badge { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
   .item-info { flex: 1; min-width: 0; }
-  .item-name {
-    font-weight: 500;
-    font-size: 13px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .item-sub {
-    font-size: 11px;
-    color: var(--text-light);
-    margin-top: 1px;
-  }
-  .item-value {
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 500;
-    white-space: nowrap;
-  }
-  .item-status {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 3px 8px;
-    border-radius: 20px;
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-  }
+  .item-name { font-weight: 500; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item-sub { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+  .item-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .item-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.4px; }
   .status-pago { background: var(--green-light); color: var(--green); }
   .status-pendente { background: var(--amber-light); color: var(--amber); }
   .status-vencido { background: var(--red-light); color: var(--red); }
   .status-recebido { background: var(--green-light); color: var(--green); }
   .status-esperado { background: var(--blue-light); color: var(--blue); }
-
-  .btn-icon {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    opacity: 0.4;
-    transition: opacity 0.2s;
-    padding: 4px;
-    border-radius: 4px;
-  }
+  .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; opacity: 0.4; transition: opacity 0.2s; padding: 4px; border-radius: 4px; }
   .btn-icon:hover { opacity: 0.9; background: var(--border); }
 
-  /* ── CARTÕES ── */
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 14px;
-    margin-bottom: 20px;
-  }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin-bottom: 20px; }
   .credit-card {
-    border-radius: var(--radius);
-    padding: 20px;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform 0.2s;
-    min-height: 140px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    box-shadow: var(--shadow-md);
+    border-radius: var(--radius); padding: 20px; position: relative; overflow: hidden;
+    cursor: pointer; transition: transform 0.2s; min-height: 140px;
+    display: flex; flex-direction: column; justify-content: space-between; box-shadow: var(--shadow-md);
   }
   .credit-card:hover { transform: translateY(-2px); }
   .credit-card.c1 { background: linear-gradient(135deg, #1e3a5f, #2563EB); color: white; }
@@ -338,220 +158,54 @@
   .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
   .card-name { font-size: 14px; font-weight: 600; opacity: 0.95; }
   .card-chip { font-size: 20px; }
-  .card-bottom {}
   .card-limit-label { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.6px; }
-  .card-used {
-    font-family: 'DM Mono', monospace;
-    font-size: 20px;
-    font-weight: 500;
-    margin: 2px 0;
-  }
-  .card-meta {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11px;
-    opacity: 0.7;
-    margin-top: 8px;
-  }
-  .card-bar-track {
-    height: 3px;
-    background: rgba(255,255,255,0.25);
-    border-radius: 2px;
-    margin-top: 8px;
-  }
-  .card-bar-fill {
-    height: 100%;
-    border-radius: 2px;
-    background: rgba(255,255,255,0.85);
-    transition: width 0.5s;
-  }
+  .card-used { font-family: 'DM Mono', monospace; font-size: 20px; font-weight: 500; margin: 2px 0; }
+  .card-meta { display: flex; justify-content: space-between; font-size: 11px; opacity: 0.7; margin-top: 8px; }
+  .card-bar-track { height: 3px; background: rgba(255,255,255,0.25); border-radius: 2px; margin-top: 8px; }
+  .card-bar-fill { height: 100%; border-radius: 2px; background: rgba(255,255,255,0.85); transition: width 0.5s; }
 
-  /* ── BOTÕES DE AÇÃO NOS CARTÕES ── */
-  .card-actions-overlay {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 6px;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
+  .card-actions-overlay { position: absolute; top: 10px; right: 10px; display: flex; gap: 6px; opacity: 0; transition: opacity 0.2s; }
   .credit-card:hover .card-actions-overlay { opacity: 1; }
-  .card-action-btn {
-    background: rgba(0,0,0,0.35);
-    border: none;
-    border-radius: 6px;
-    color: white;
-    font-size: 13px;
-    padding: 5px 8px;
-    cursor: pointer;
-    backdrop-filter: blur(4px);
-    transition: background 0.15s;
-  }
+  .card-action-btn { background: rgba(0,0,0,0.35); border: none; border-radius: 6px; color: white; font-size: 13px; padding: 5px 8px; cursor: pointer; backdrop-filter: blur(4px); transition: background 0.15s; }
   .card-action-btn:hover { background: rgba(0,0,0,0.6); }
   .card-action-del:hover { background: rgba(220,38,38,0.7); }
 
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 16px;
-    display: none;
-  }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; display: none; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: white;
-    border-radius: var(--radius);
-    padding: 24px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-  }
+  .modal { background: white; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
   .modal h3 { font-size: 16px; font-weight: 700; margin-bottom: 18px; }
   .form-group { margin-bottom: 14px; }
-  .form-group label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    font-family: inherit;
-    font-size: 14px;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.2s;
-  }
-  .form-group input:focus,
-  .form-group select:focus { border-color: var(--accent); }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
-  .btn-primary {
-    flex: 1;
-    background: var(--text);
-    color: white;
-    border: none;
-    border-radius: var(--radius-sm);
-    padding: 11px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.2s;
-  }
+  .btn-primary { flex: 1; background: var(--text); color: white; border: none; border-radius: var(--radius-sm); padding: 11px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; transition: opacity 0.2s; }
   .btn-primary:hover { opacity: 0.85; }
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text-muted);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 11px 16px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: inherit;
-  }
+  .btn-secondary { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 16px; font-size: 14px; cursor: pointer; font-family: inherit; }
 
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    text-align: center;
-    padding: 28px 16px;
-    color: var(--text-light);
-  }
+  .empty-state { text-align: center; padding: 28px 16px; color: var(--text-light); }
   .empty-state .empty-icon { font-size: 28px; margin-bottom: 8px; }
   .empty-state p { font-size: 13px; }
 
-  /* ── TABS ── */
-  .tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--surface2);
-    padding: 4px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-  }
-  .tab-btn {
-    flex: 1;
-    min-width: 90px;
-    padding: 8px 12px;
-    border: none;
-    background: none;
-    border-radius: 7px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    color: var(--text-muted);
-    transition: all 0.2s;
-  }
-  .tab-btn.active {
-    background: var(--surface);
-    color: var(--text);
-    box-shadow: var(--shadow);
-    font-weight: 600;
-  }
-
+  .tabs { display: flex; gap: 4px; background: var(--surface2); padding: 4px; border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn { flex: 1; min-width: 90px; padding: 8px 12px; border: none; background: none; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: inherit; color: var(--text-muted); transition: all 0.2s; }
+  .tab-btn.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); font-weight: 600; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
-  /* ── PROGRESSO DO MÊS ── */
-  .month-progress {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 18px 20px;
-    margin-bottom: 20px;
-    box-shadow: var(--shadow);
-  }
-  .progress-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-  }
-  .progress-track {
-    height: 8px;
-    background: var(--surface2);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 4px;
-    background: linear-gradient(90deg, var(--green), #86EFAC);
-    transition: width 0.8s ease;
-  }
-  .progress-stats {
-    display: flex;
-    gap: 20px;
-    margin-top: 12px;
-    flex-wrap: wrap;
-  }
+  .month-progress { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; margin-bottom: 20px; box-shadow: var(--shadow); }
+  .progress-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .progress-track { height: 8px; background: var(--surface2); border-radius: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--green), #86EFAC); transition: width 0.8s ease; }
+  .progress-stats { display: flex; gap: 20px; margin-top: 12px; flex-wrap: wrap; }
   .prog-stat { font-size: 12px; color: var(--text-muted); }
   .prog-stat strong { color: var(--text); }
-
-  .full-width { grid-column: 1 / -1; }
   .mt-4 { margin-top: 16px; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="header">
   <div class="header-left">
     <h1>💛 Meu Controle Financeiro</h1>
@@ -565,8 +219,6 @@
 </div>
 
 <div class="main">
-
-  <!-- TABS -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('visao-geral')">📊 Visão Geral</button>
     <button class="tab-btn" onclick="switchTab('contas')">📋 Contas</button>
@@ -574,10 +226,8 @@
     <button class="tab-btn" onclick="switchTab('receitas')">💰 Receitas</button>
   </div>
 
-  <!-- ════════════════ TAB: VISÃO GERAL ════════════════ -->
+  <!-- VISÃO GERAL -->
   <div class="tab-panel active" id="tab-visao-geral">
-
-    <!-- RESUMO -->
     <div class="summary-grid">
       <div class="summary-card receita">
         <div class="summary-label">Total a Receber</div>
@@ -600,47 +250,32 @@
         <div class="summary-sub">Receitas − Contas pagas</div>
       </div>
     </div>
-
-    <!-- ALERTAS -->
     <div class="alerts-box" id="alerts-box">
       <div class="alerts-title">⚠️ Atenção — Contas urgentes</div>
       <div id="alerts-list"></div>
     </div>
-
-    <!-- PROGRESSO DO MÊS -->
     <div class="month-progress">
-      <div class="progress-label">
-        <span>Contas pagas este mês</span>
-        <span id="prog-pct">0%</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="prog-fill" style="width:0%"></div>
-      </div>
+      <div class="progress-label"><span>Contas pagas este mês</span><span id="prog-pct">0%</span></div>
+      <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
       <div class="progress-stats">
         <div class="prog-stat">✅ Pagas: <strong id="prog-pagas">0</strong></div>
         <div class="prog-stat">⏳ Pendentes: <strong id="prog-pend">0</strong></div>
         <div class="prog-stat">❌ Vencidas: <strong id="prog-venc">0</strong></div>
       </div>
     </div>
-
-    <!-- PRÓXIMAS CONTAS (RESUMO) -->
     <div class="section-card">
       <div class="section-header">
         <div class="section-title"><span class="section-icon">🔔</span> Próximas a vencer (7 dias)</div>
       </div>
       <div class="section-body">
         <div class="item-list" id="proximas-list">
-          <div class="empty-state">
-            <div class="empty-icon">🎉</div>
-            <p>Nenhuma conta vencendo nos próximos 7 dias!</p>
-          </div>
+          <div class="empty-state"><div class="empty-icon">🎉</div><p>Nenhuma conta vencendo nos próximos 7 dias!</p></div>
         </div>
       </div>
     </div>
-
   </div>
 
-  <!-- ════════════════ TAB: CONTAS ════════════════ -->
+  <!-- CONTAS -->
   <div class="tab-panel" id="tab-contas">
     <div class="section-card">
       <div class="section-header">
@@ -649,27 +284,23 @@
       </div>
       <div class="section-body">
         <div class="item-list" id="contas-list">
-          <div class="empty-state">
-            <div class="empty-icon">📋</div>
-            <p>Nenhuma conta cadastrada.<br>Clique em "+ Nova Conta" para começar.</p>
-          </div>
+          <div class="empty-state"><div class="empty-icon">📋</div><p>Nenhuma conta cadastrada.<br>Clique em "+ Nova Conta" para começar.</p></div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════ TAB: CARTÕES ════════════════ -->
+  <!-- CARTÕES -->
   <div class="tab-panel" id="tab-cartoes">
     <div class="section-card" style="margin-bottom:20px">
       <div class="section-header">
-        <div class="section-title"><span class="section-icon">💳</span> Meus Cartões (<span id="card-count">4</span>)</div>
+        <div class="section-title"><span class="section-icon">💳</span> Meus Cartões (<span id="card-count">0</span>)</div>
         <button class="btn-add" onclick="openModal('cartao-novo')">+ Adicionar Cartão</button>
       </div>
       <div class="section-body">
         <div class="cards-grid" id="cards-grid"></div>
       </div>
     </div>
-
     <div class="section-card" style="margin-bottom:20px">
       <div class="section-header">
         <div class="section-title"><span class="section-icon">📌</span> Faturas do Mês</div>
@@ -677,15 +308,10 @@
       </div>
       <div class="section-body">
         <div class="item-list" id="faturas-list">
-          <div class="empty-state">
-            <div class="empty-icon">💳</div>
-            <p>Nenhum gasto lançado nos cartões ainda.</p>
-          </div>
+          <div class="empty-state"><div class="empty-icon">💳</div><p>Nenhum gasto lançado nos cartões ainda.</p></div>
         </div>
       </div>
     </div>
-
-    <!-- CALCULADORA MELHOR DIA -->
     <div class="section-card">
       <div class="section-header">
         <div class="section-title"><span class="section-icon">🛒</span> Melhor Dia de Compra</div>
@@ -699,7 +325,7 @@
     </div>
   </div>
 
-  <!-- ════════════════ TAB: RECEITAS ════════════════ -->
+  <!-- RECEITAS -->
   <div class="tab-panel" id="tab-receitas">
     <div class="section-card">
       <div class="section-header">
@@ -708,41 +334,26 @@
       </div>
       <div class="section-body">
         <div class="item-list" id="receitas-list">
-          <div class="empty-state">
-            <div class="empty-icon">💰</div>
-            <p>Cadastre suas fontes de renda — clínica, bico 1 e bico 2.</p>
-          </div>
+          <div class="empty-state"><div class="empty-icon">💰</div><p>Cadastre suas fontes de renda — clínica, bico 1 e bico 2.</p></div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-</div><!-- /main -->
-
-<!-- ════════════ MODAIS ════════════ -->
-
-<!-- Modal Conta -->
+<!-- MODAIS -->
 <div class="modal-overlay" id="modal-conta">
   <div class="modal">
     <h3>📋 Nova Conta a Pagar</h3>
-    <div class="form-group">
-      <label>Nome da Conta</label>
-      <input type="text" id="c-nome" placeholder="Ex: Conta de Luz, Aluguel...">
-    </div>
+    <div class="form-group"><label>Nome da Conta</label><input type="text" id="c-nome" placeholder="Ex: Conta de Luz, Aluguel..."></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Valor (R$)</label>
-        <input type="number" id="c-valor" placeholder="0,00" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Vencimento (dia)</label>
-        <input type="number" id="c-dia" placeholder="Ex: 10" min="1" max="31">
-      </div>
+      <div class="form-group"><label>Valor (R$)</label><input type="number" id="c-valor" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label>Vencimento (dia)</label><input type="number" id="c-dia" placeholder="Ex: 10" min="1" max="31"></div>
     </div>
     <div class="form-group">
       <label>Categoria</label>
       <select id="c-cat">
-        <option value="moradia">🏠 Moradia (aluguel, condomínio)</option>
+        <option value="moradia">🏠 Moradia</option>
         <option value="energia">⚡ Energia / Água / Gás</option>
         <option value="internet">📶 Internet / Telefone</option>
         <option value="saude">❤️ Saúde / Plano</option>
@@ -767,33 +378,17 @@
   </div>
 </div>
 
-<!-- Modal Adicionar Cartão -->
 <div class="modal-overlay" id="modal-cartao-novo">
   <div class="modal">
     <h3>💳 Novo Cartão</h3>
-    <div class="form-group">
-      <label>Nome do Banco/Cartão</label>
-      <input type="text" id="cn-nome" placeholder="Ex: Nubank, Itaú, Bradesco...">
+    <div class="form-group"><label>Nome do Banco/Cartão</label><input type="text" id="cn-nome" placeholder="Ex: Nubank, Itaú..."></div>
+    <div class="form-row">
+      <div class="form-group"><label>Limite Total (R$)</label><input type="number" id="cn-limite" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label>Fatura Atual (R$)</label><input type="number" id="cn-usado" placeholder="0,00" step="0.01"></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Limite Total (R$)</label>
-        <input type="number" id="cn-limite" placeholder="0,00" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Fatura Atual (R$)</label>
-        <input type="number" id="cn-usado" placeholder="0,00" step="0.01">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Dia do Fechamento</label>
-        <input type="number" id="cn-fechamento" placeholder="Ex: 20" min="1" max="31">
-      </div>
-      <div class="form-group">
-        <label>Dia do Vencimento</label>
-        <input type="number" id="cn-vencimento" placeholder="Ex: 5" min="1" max="31">
-      </div>
+      <div class="form-group"><label>Dia do Fechamento</label><input type="number" id="cn-fechamento" placeholder="Ex: 20" min="1" max="31"></div>
+      <div class="form-group"><label>Dia do Vencimento</label><input type="number" id="cn-vencimento" placeholder="Ex: 5" min="1" max="31"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('cartao-novo')">Cancelar</button>
@@ -802,34 +397,18 @@
   </div>
 </div>
 
-<!-- Modal Editar Cartão -->
 <div class="modal-overlay" id="modal-cartao-editar">
   <div class="modal">
     <h3>✏️ Editar Cartão</h3>
     <input type="hidden" id="ce-idx">
-    <div class="form-group">
-      <label>Nome do Banco/Cartão</label>
-      <input type="text" id="ce-nome" placeholder="Ex: Nubank, Itaú, Bradesco...">
+    <div class="form-group"><label>Nome do Banco/Cartão</label><input type="text" id="ce-nome" placeholder="Ex: Nubank, Itaú..."></div>
+    <div class="form-row">
+      <div class="form-group"><label>Limite Total (R$)</label><input type="number" id="ce-limite" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label>Fatura Atual (R$)</label><input type="number" id="ce-usado" placeholder="0,00" step="0.01"></div>
     </div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Limite Total (R$)</label>
-        <input type="number" id="ce-limite" placeholder="0,00" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Fatura Atual (R$)</label>
-        <input type="number" id="ce-usado" placeholder="0,00" step="0.01">
-      </div>
-    </div>
-    <div class="form-row">
-      <div class="form-group">
-        <label>Dia do Fechamento</label>
-        <input type="number" id="ce-fechamento" placeholder="Ex: 20" min="1" max="31">
-      </div>
-      <div class="form-group">
-        <label>Dia do Vencimento</label>
-        <input type="number" id="ce-vencimento" placeholder="Ex: 5" min="1" max="31">
-      </div>
+      <div class="form-group"><label>Dia do Fechamento</label><input type="number" id="ce-fechamento" placeholder="Ex: 20" min="1" max="31"></div>
+      <div class="form-group"><label>Dia do Vencimento</label><input type="number" id="ce-vencimento" placeholder="Ex: 5" min="1" max="31"></div>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('cartao-editar')">Cancelar</button>
@@ -838,28 +417,13 @@
   </div>
 </div>
 
-<!-- Modal Fatura -->
 <div class="modal-overlay" id="modal-fatura">
   <div class="modal">
     <h3>💳 Lançar Gasto no Cartão</h3>
-    <div class="form-group">
-      <label>Descrição</label>
-      <input type="text" id="f-nome" placeholder="Ex: Farmácia, Supermercado...">
-    </div>
+    <div class="form-group"><label>Descrição</label><input type="text" id="f-nome" placeholder="Ex: Farmácia, Supermercado..."></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Valor (R$)</label>
-        <input type="number" id="f-valor" placeholder="0,00" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Cartão</label>
-        <select id="f-cartao">
-          <option value="0">Cartão 1</option>
-          <option value="1">Cartão 2</option>
-          <option value="2">Cartão 3</option>
-          <option value="3">Cartão 4</option>
-        </select>
-      </div>
+      <div class="form-group"><label>Valor (R$)</label><input type="number" id="f-valor" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label>Cartão</label><select id="f-cartao"></select></div>
     </div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('fatura')">Cancelar</button>
@@ -868,7 +432,6 @@
   </div>
 </div>
 
-<!-- Modal Receita -->
 <div class="modal-overlay" id="modal-receita">
   <div class="modal">
     <h3>💰 Nova Receita</h3>
@@ -881,24 +444,12 @@
         <option value="outro">💼 Outro</option>
       </select>
     </div>
-    <div class="form-group">
-      <label>Descrição (opcional)</label>
-      <input type="text" id="r-desc" placeholder="Ex: Pagamento semana 1">
-    </div>
+    <div class="form-group"><label>Descrição (opcional)</label><input type="text" id="r-desc" placeholder="Ex: Pagamento semana 1"></div>
     <div class="form-row">
-      <div class="form-group">
-        <label>Valor Esperado (R$)</label>
-        <input type="number" id="r-esperado" placeholder="0,00" step="0.01">
-      </div>
-      <div class="form-group">
-        <label>Valor Recebido (R$)</label>
-        <input type="number" id="r-recebido" placeholder="0,00 (se já recebeu)" step="0.01">
-      </div>
+      <div class="form-group"><label>Valor Esperado (R$)</label><input type="number" id="r-esperado" placeholder="0,00" step="0.01"></div>
+      <div class="form-group"><label>Valor Recebido (R$)</label><input type="number" id="r-recebido" placeholder="0,00" step="0.01"></div>
     </div>
-    <div class="form-group">
-      <label>Dia previsto de recebimento</label>
-      <input type="number" id="r-dia" placeholder="Ex: 5" min="1" max="31">
-    </div>
+    <div class="form-group"><label>Dia previsto de recebimento</label><input type="number" id="r-dia" placeholder="Ex: 5" min="1" max="31"></div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal('receita')">Cancelar</button>
       <button class="btn-primary" onclick="salvarReceita()">Salvar</button>
@@ -907,41 +458,19 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// ESTADO DO APP
-// ═══════════════════════════════════════════
-const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
-let currentMonth = 5; // Junho = índice 5
+const MONTHS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+let currentMonth = 5;
 let currentYear = 2026;
-
-const CAT_ICONS = {
-  moradia:'🏠', energia:'⚡', internet:'📶', saude:'❤️',
-  mercado:'🛒', transporte:'🚌', educacao:'📚', outro:'📦'
-};
-const CAT_COLORS = {
-  moradia:'#DBEAFE', energia:'#FEF3C7', internet:'#EDE9FE', saude:'#FCE7F3',
-  mercado:'#DCFCE7', transporte:'#F3F4F6', educacao:'#FEF3C7', outro:'#F3F4F6'
-};
+const CAT_ICONS = { moradia:'🏠', energia:'⚡', internet:'📶', saude:'❤️', mercado:'🛒', transporte:'🚌', educacao:'📚', outro:'📦' };
+const CAT_COLORS = { moradia:'#DBEAFE', energia:'#FEF3C7', internet:'#EDE9FE', saude:'#FCE7F3', mercado:'#DCFCE7', transporte:'#F3F4F6', educacao:'#FEF3C7', outro:'#F3F4F6' };
 const FONTE_ICONS = { clinica:'🏥', bico1:'👵', bico2:'👵', outro:'💼' };
 const CARD_CLASSES = ['c1','c2','c3','c4'];
 
-// ─── Dados padrão dos 4 cartões ───
-let cartoes = [
-  { nome: 'Cartão 1', limite: 1000, usado: 0, fechamento: 20, vencimento: 5 },
-  { nome: 'Cartão 2', limite: 1000, usado: 0, fechamento: 15, vencimento: 1 },
-  { nome: 'Cartão 3', limite: 1000, usado: 0, fechamento: 10, vencimento: 25 },
-  { nome: 'Cartão 4', limite: 1000, usado: 0, fechamento: 5,  vencimento: 20 },
-];
-
+let cartoes = [];
 let contas = [];
 let receitas = [];
 let faturas = [];
 
-// ═══════════════════════════════════════════
-// NAVEGAÇÃO DE MESES
-// ═══════════════════════════════════════════
 function changeMonth(dir) {
   currentMonth += dir;
   if (currentMonth > 11) { currentMonth = 0; currentYear++; }
@@ -950,9 +479,6 @@ function changeMonth(dir) {
   renderAll();
 }
 
-// ═══════════════════════════════════════════
-// TABS
-// ═══════════════════════════════════════════
 function switchTab(id) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -961,28 +487,18 @@ function switchTab(id) {
   renderAll();
 }
 
-// ═══════════════════════════════════════════
-// MODAIS
-// ═══════════════════════════════════════════
 function openModal(type) {
-  // preencher select de cartão com nomes reais
   if (type === 'fatura') {
     const sel = document.getElementById('f-cartao');
     sel.innerHTML = cartoes.map((c,i) => `<option value="${i}">${c.nome}</option>`).join('');
   }
   document.getElementById('modal-' + type).classList.add('open');
 }
-function closeModal(type) {
-  document.getElementById('modal-' + type).classList.remove('open');
-}
-// fechar clicando fora
+function closeModal(type) { document.getElementById('modal-' + type).classList.remove('open'); }
 document.querySelectorAll('.modal-overlay').forEach(o => {
   o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
 });
 
-// ═══════════════════════════════════════════
-// SALVAR DADOS
-// ═══════════════════════════════════════════
 function salvarConta() {
   const nome = document.getElementById('c-nome').value.trim();
   const valor = parseFloat(document.getElementById('c-valor').value) || 0;
@@ -992,8 +508,7 @@ function salvarConta() {
   if (!nome || !valor) return alert('Preencha o nome e o valor da conta.');
   contas.push({ nome, valor, dia, cat, status, mes: currentMonth, ano: currentYear });
   ['c-nome','c-valor','c-dia'].forEach(id => document.getElementById(id).value = '');
-  closeModal('conta');
-  renderAll();
+  closeModal('conta'); renderAll();
 }
 
 function adicionarCartao() {
@@ -1005,8 +520,7 @@ function adicionarCartao() {
   if (!nome) return alert('Informe o nome do cartão.');
   cartoes.push({ nome, limite, usado, fechamento, vencimento });
   ['cn-nome','cn-limite','cn-usado','cn-fechamento','cn-vencimento'].forEach(id => document.getElementById(id).value = '');
-  closeModal('cartao-novo');
-  renderAll();
+  closeModal('cartao-novo'); renderAll();
 }
 
 function abrirEdicaoCartao(i) {
@@ -1029,12 +543,11 @@ function salvarEdicaoCartao() {
   const vencimento = parseInt(document.getElementById('ce-vencimento').value) || cartoes[i].vencimento;
   if (!nome) return alert('Informe o nome do cartão.');
   cartoes[i] = { nome, limite, usado, fechamento, vencimento };
-  closeModal('cartao-editar');
-  renderAll();
+  closeModal('cartao-editar'); renderAll();
 }
 
 function excluirCartao(i) {
-  if (!confirm(`Excluir o cartão "${cartoes[i].nome}"? Os gastos lançados nele também serão removidos.`)) return;
+  if (!confirm(`Excluir o cartão "${cartoes[i].nome}"?`)) return;
   faturas = faturas.filter(f => f.cidx !== i);
   faturas.forEach(f => { if (f.cidx > i) f.cidx--; });
   cartoes.splice(i, 1);
@@ -1049,8 +562,7 @@ function salvarFatura() {
   faturas.push({ nome, valor, cidx, mes: currentMonth, ano: currentYear });
   cartoes[cidx].usado += valor;
   ['f-nome','f-valor'].forEach(id => document.getElementById(id).value = '');
-  closeModal('fatura');
-  renderAll();
+  closeModal('fatura'); renderAll();
 }
 
 function salvarReceita() {
@@ -1062,20 +574,15 @@ function salvarReceita() {
   if (!esperado) return alert('Informe o valor esperado.');
   receitas.push({ fonte, desc, esperado, recebido, dia, mes: currentMonth, ano: currentYear });
   ['r-desc','r-esperado','r-recebido','r-dia'].forEach(id => document.getElementById(id).value = '');
-  closeModal('receita');
-  renderAll();
+  closeModal('receita'); renderAll();
 }
 
-// ═══════════════════════════════════════════
-// DELETAR
-// ═══════════════════════════════════════════
 function deleteConta(i) { if(confirm('Remover esta conta?')) { contas.splice(i,1); renderAll(); } }
 function deleteReceita(i) { if(confirm('Remover esta receita?')) { receitas.splice(i,1); renderAll(); } }
 function deleteFatura(i) {
   if(confirm('Remover este gasto?')) {
-    cartoes[faturas[i].cidx].usado = Math.max(0, cartoes[faturas[i].cidx].usado - faturas[i].valor);
-    faturas.splice(i,1);
-    renderAll();
+    if (cartoes[faturas[i].cidx]) cartoes[faturas[i].cidx].usado = Math.max(0, cartoes[faturas[i].cidx].usado - faturas[i].valor);
+    faturas.splice(i,1); renderAll();
   }
 }
 function toggleStatus(i) {
@@ -1086,34 +593,23 @@ function toggleStatus(i) {
   renderAll();
 }
 
-// ═══════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════
-function fmt(v) {
-  return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-}
-function today() { return new Date(); }
+function fmt(v) { return 'R$ ' + v.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
 function daysUntil(dia) {
-  const t = today();
+  const t = new Date();
   const target = new Date(currentYear, currentMonth, dia);
   return Math.round((target - t) / (1000*60*60*24));
 }
 
-// ═══════════════════════════════════════════
-// RENDER PRINCIPAL
-// ═══════════════════════════════════════════
 function renderAll() {
   const mesContas = contas.filter(c => c.mes === currentMonth && c.ano === currentYear);
   const mesReceitas = receitas.filter(r => r.mes === currentMonth && r.ano === currentYear);
   const mesFaturas = faturas.filter(f => f.mes === currentMonth && f.ano === currentYear);
-
   const totalReceita = mesReceitas.reduce((s,r) => s + (r.recebido || r.esperado), 0);
   const totalDespesa = mesContas.reduce((s,c) => s + c.valor, 0);
   const totalPago = mesContas.filter(c=>c.status==='pago').reduce((s,c)=>s+c.valor,0);
   const totalPendente = mesContas.filter(c=>c.status!=='pago').reduce((s,c)=>s+c.valor,0);
   const saldo = totalReceita - totalPago;
 
-  // ── Resumo Cards ──
   document.getElementById('sum-receita').textContent = fmt(totalReceita);
   document.getElementById('sum-receita-sub').textContent = `${mesReceitas.length} fonte(s) de renda`;
   document.getElementById('sum-despesa').textContent = fmt(totalDespesa);
@@ -1122,7 +618,6 @@ function renderAll() {
   document.getElementById('sum-pendente-sub').textContent = `${mesContas.filter(c=>c.status!=='pago').length} em aberto`;
   document.getElementById('sum-saldo').textContent = fmt(saldo);
 
-  // ── Progresso ──
   const pagas = mesContas.filter(c=>c.status==='pago').length;
   const pend  = mesContas.filter(c=>c.status==='pendente').length;
   const venc  = mesContas.filter(c=>c.status==='vencido').length;
@@ -1133,147 +628,88 @@ function renderAll() {
   document.getElementById('prog-pend').textContent = pend;
   document.getElementById('prog-venc').textContent = venc;
 
-  // ── Alertas ──
-  const urgentes = mesContas.filter(c => {
-    if (c.status === 'pago') return false;
-    const d = daysUntil(c.dia);
-    return d <= 5;
-  });
+  const urgentes = mesContas.filter(c => { if (c.status === 'pago') return false; return daysUntil(c.dia) <= 5; });
   const alertsBox = document.getElementById('alerts-box');
-  const alertsList = document.getElementById('alerts-list');
   if (urgentes.length) {
     alertsBox.classList.add('visible');
-    alertsList.innerHTML = urgentes.map(c => {
+    document.getElementById('alerts-list').innerHTML = urgentes.map(c => {
       const d = daysUntil(c.dia);
       const label = d < 0 ? `Vencida há ${Math.abs(d)} dia(s)!` : d === 0 ? 'Vence HOJE!' : `Vence em ${d} dia(s)`;
-      const dot = d <= 0 ? '' : 'warn';
-      return `<div class="alert-item"><div class="alert-dot ${dot}"></div><div><strong>${c.nome}</strong> — ${fmt(c.valor)} — <em>${label}</em></div></div>`;
+      return `<div class="alert-item"><div class="alert-dot ${d<=0?'':'warn'}"></div><div><strong>${c.nome}</strong> — ${fmt(c.valor)} — <em>${label}</em></div></div>`;
     }).join('');
-  } else {
-    alertsBox.classList.remove('visible');
-  }
+  } else { alertsBox.classList.remove('visible'); }
 
-  // ── Próximas 7 dias ──
-  const proximas = mesContas.filter(c => {
-    if (c.status === 'pago') return false;
-    const d = daysUntil(c.dia);
-    return d >= 0 && d <= 7;
-  }).sort((a,b) => a.dia - b.dia);
+  const proximas = mesContas.filter(c => { if (c.status==='pago') return false; const d=daysUntil(c.dia); return d>=0&&d<=7; }).sort((a,b)=>a.dia-b.dia);
   const proximasList = document.getElementById('proximas-list');
-  if (proximas.length) {
-    proximasList.innerHTML = proximas.map((c,i) => rowConta(c, contas.indexOf(c))).join('');
-  } else {
-    proximasList.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><p>Nenhuma conta vencendo nos próximos 7 dias!</p></div>`;
-  }
+  proximasList.innerHTML = proximas.length ? proximas.map(c => rowConta(c, contas.indexOf(c))).join('') : `<div class="empty-state"><div class="empty-icon">🎉</div><p>Nenhuma conta vencendo nos próximos 7 dias!</p></div>`;
 
-  // ── Lista Contas ──
   const contasList = document.getElementById('contas-list');
-  if (mesContas.length) {
-    contasList.innerHTML = [...mesContas].sort((a,b)=>a.dia-b.dia).map((c) => rowConta(c, contas.indexOf(c))).join('');
-  } else {
-    contasList.innerHTML = `<div class="empty-state"><div class="empty-icon">📋</div><p>Nenhuma conta cadastrada.<br>Clique em "+ Nova Conta" para começar.</p></div>`;
-  }
+  contasList.innerHTML = mesContas.length ? [...mesContas].sort((a,b)=>a.dia-b.dia).map(c => rowConta(c, contas.indexOf(c))).join('') : `<div class="empty-state"><div class="empty-icon">📋</div><p>Nenhuma conta cadastrada.<br>Clique em "+ Nova Conta" para começar.</p></div>`;
 
-  // ── Cartões ──
   renderCartoes();
   renderCardStrategy();
 
-  // ── Faturas ──
   const faturasList = document.getElementById('faturas-list');
-  if (mesFaturas.length) {
-    faturasList.innerHTML = mesFaturas.map((f,i) => `
-      <div class="item-row">
-        <div class="item-badge" style="background:#EDE9FE">💳</div>
-        <div class="item-info">
-          <div class="item-name">${f.nome}</div>
-          <div class="item-sub">${cartoes[f.cidx] ? cartoes[f.cidx].nome : 'Cartão removido'}</div>
-        </div>
-        <div class="item-value" style="color:var(--red)">${fmt(f.valor)}</div>
-        <button class="btn-icon" onclick="deleteFatura(${faturas.indexOf(f)})" title="Remover">🗑️</button>
-      </div>`).join('');
-  } else {
-    faturasList.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div><p>Nenhum gasto lançado nos cartões ainda.</p></div>`;
-  }
+  faturasList.innerHTML = mesFaturas.length ? mesFaturas.map(f => `
+    <div class="item-row">
+      <div class="item-badge" style="background:#EDE9FE">💳</div>
+      <div class="item-info"><div class="item-name">${f.nome}</div><div class="item-sub">${cartoes[f.cidx]?cartoes[f.cidx].nome:'Cartão removido'}</div></div>
+      <div class="item-value" style="color:var(--red)">${fmt(f.valor)}</div>
+      <button class="btn-icon" onclick="deleteFatura(${faturas.indexOf(f)})">🗑️</button>
+    </div>`).join('') : `<div class="empty-state"><div class="empty-icon">💳</div><p>Nenhum gasto lançado nos cartões ainda.</p></div>`;
 
-  // ── Receitas ──
   const receitasList = document.getElementById('receitas-list');
-  if (mesReceitas.length) {
-    receitasList.innerHTML = mesReceitas.map((r,i) => `
-      <div class="item-row">
-        <div class="item-badge" style="background:var(--green-light); font-size:18px">${FONTE_ICONS[r.fonte]}</div>
-        <div class="item-info">
-          <div class="item-name">${r.desc || fonteLabel(r.fonte)}</div>
-          <div class="item-sub">Dia ${r.dia || '—'} · Esperado: ${fmt(r.esperado)}</div>
-        </div>
-        <div class="item-value" style="color:var(--green)">${r.recebido ? fmt(r.recebido) : fmt(r.esperado)}</div>
-        <span class="item-status ${r.recebido ? 'status-recebido' : 'status-esperado'}">${r.recebido ? 'Recebido' : 'A Receber'}</span>
-        <button class="btn-icon" onclick="deleteReceita(${receitas.indexOf(r)})" title="Remover">🗑️</button>
-      </div>`).join('');
-  } else {
-    receitasList.innerHTML = `<div class="empty-state"><div class="empty-icon">💰</div><p>Cadastre suas fontes de renda — clínica, bico 1 e bico 2.</p></div>`;
-  }
+  receitasList.innerHTML = mesReceitas.length ? mesReceitas.map(r => `
+    <div class="item-row">
+      <div class="item-badge" style="background:var(--green-light);font-size:18px">${FONTE_ICONS[r.fonte]}</div>
+      <div class="item-info"><div class="item-name">${r.desc||fonteLabel(r.fonte)}</div><div class="item-sub">Dia ${r.dia||'—'} · Esperado: ${fmt(r.esperado)}</div></div>
+      <div class="item-value" style="color:var(--green)">${r.recebido?fmt(r.recebido):fmt(r.esperado)}</div>
+      <span class="item-status ${r.recebido?'status-recebido':'status-esperado'}">${r.recebido?'Recebido':'A Receber'}</span>
+      <button class="btn-icon" onclick="deleteReceita(${receitas.indexOf(r)})">🗑️</button>
+    </div>`).join('') : `<div class="empty-state"><div class="empty-icon">💰</div><p>Cadastre suas fontes de renda — clínica, bico 1 e bico 2.</p></div>`;
 }
 
 function fonteLabel(f) {
-  const m = { clinica:'Clínica', bico1:'Bico (Cuidadora — dias ímpares)', bico2:'Bico (Cuidadora — dias pares)', outro:'Outra Renda' };
-  return m[f] || f;
+  return { clinica:'Clínica', bico1:'Bico (Cuidadora — dias ímpares)', bico2:'Bico (Cuidadora — dias pares)', outro:'Outra Renda' }[f] || f;
 }
 
 function rowConta(c, realIdx) {
-  const icon = CAT_ICONS[c.cat] || '📦';
-  const bg = CAT_COLORS[c.cat] || '#F3F4F6';
+  const icon = CAT_ICONS[c.cat]||'📦';
+  const bg = CAT_COLORS[c.cat]||'#F3F4F6';
   const d = daysUntil(c.dia);
-  const sub = c.dia ? `Dia ${c.dia} · ${d < 0 ? `Venceu ${Math.abs(d)}d atrás` : d === 0 ? 'Vence hoje!' : `Vence em ${d}d`}` : '';
-  return `
-    <div class="item-row">
-      <div class="item-badge" style="background:${bg}">${icon}</div>
-      <div class="item-info">
-        <div class="item-name">${c.nome}</div>
-        <div class="item-sub">${sub}</div>
-      </div>
-      <div class="item-value">${fmt(c.valor)}</div>
-      <span class="item-status status-${c.status}" onclick="toggleStatus(${realIdx})" style="cursor:pointer" title="Clique para alterar status">${statusLabel(c.status)}</span>
-      <button class="btn-icon" onclick="deleteConta(${realIdx})" title="Remover">🗑️</button>
-    </div>`;
-}
-
-function statusLabel(s) {
-  return s === 'pago' ? '✅ Pago' : s === 'vencido' ? '❌ Vencido' : '⏳ Pendente';
+  const sub = c.dia ? `Dia ${c.dia} · ${d<0?`Venceu ${Math.abs(d)}d atrás`:d===0?'Vence hoje!':`Vence em ${d}d`}` : '';
+  return `<div class="item-row">
+    <div class="item-badge" style="background:${bg}">${icon}</div>
+    <div class="item-info"><div class="item-name">${c.nome}</div><div class="item-sub">${sub}</div></div>
+    <div class="item-value">${fmt(c.valor)}</div>
+    <span class="item-status status-${c.status}" onclick="toggleStatus(${realIdx})" style="cursor:pointer">${c.status==='pago'?'✅ Pago':c.status==='vencido'?'❌ Vencido':'⏳ Pendente'}</span>
+    <button class="btn-icon" onclick="deleteConta(${realIdx})">🗑️</button>
+  </div>`;
 }
 
 function renderCartoes() {
   const grid = document.getElementById('cards-grid');
   const countEl = document.getElementById('card-count');
   if (countEl) countEl.textContent = cartoes.length;
-
   if (!cartoes.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">💳</div><p>Nenhum cartão cadastrado.<br>Clique em "+ Adicionar Cartão" para começar.</p></div>`;
     return;
   }
-
   grid.innerHTML = cartoes.map((c,i) => {
     const pct = c.limite ? Math.min(100, Math.round((c.usado/c.limite)*100)) : 0;
-    const colorClass = CARD_CLASSES[i % CARD_CLASSES.length];
-    return `
-      <div class="credit-card ${colorClass}" style="position:relative">
-        <div class="card-actions-overlay">
-          <button class="card-action-btn" onclick="abrirEdicaoCartao(${i})" title="Editar">✏️</button>
-          <button class="card-action-btn card-action-del" onclick="excluirCartao(${i})" title="Excluir">🗑️</button>
-        </div>
-        <div class="card-top">
-          <div class="card-name">${c.nome}</div>
-          <div class="card-chip">💳</div>
-        </div>
-        <div class="card-bottom">
-          <div class="card-limit-label">Fatura Atual</div>
-          <div class="card-used">${fmt(c.usado)}</div>
-          <div class="card-bar-track"><div class="card-bar-fill" style="width:${pct}%"></div></div>
-          <div class="card-meta">
-            <span>Limite: ${fmt(c.limite)}</span>
-            <span>Fecha dia ${c.fechamento} · Vence dia ${c.vencimento}</span>
-          </div>
-        </div>
-      </div>`;
+    return `<div class="credit-card ${CARD_CLASSES[i%CARD_CLASSES.length]}" style="position:relative">
+      <div class="card-actions-overlay">
+        <button class="card-action-btn" onclick="abrirEdicaoCartao(${i})">✏️</button>
+        <button class="card-action-btn card-action-del" onclick="excluirCartao(${i})">🗑️</button>
+      </div>
+      <div class="card-top"><div class="card-name">${c.nome}</div><div class="card-chip">💳</div></div>
+      <div class="card-bottom">
+        <div class="card-limit-label">Fatura Atual</div>
+        <div class="card-used">${fmt(c.usado)}</div>
+        <div class="card-bar-track"><div class="card-bar-fill" style="width:${pct}%"></div></div>
+        <div class="card-meta"><span>Limite: ${fmt(c.limite)}</span><span>Fecha dia ${c.fechamento} · Vence dia ${c.vencimento}</span></div>
+      </div>
+    </div>`;
   }).join('');
 }
 
@@ -1288,45 +724,22 @@ function renderCardStrategy() {
   list.innerHTML = cartoes.map((c,i) => {
     const melhorDia = (c.fechamento % 28) + 1;
     const disp = c.limite - c.usado;
-    const bg = bgColors[i % bgColors.length];
-    return `
-      <div class="item-row">
-        <div class="item-badge" style="background:${bg}">💳</div>
-        <div class="item-info">
-          <div class="item-name">${c.nome}</div>
-          <div class="item-sub">Fecha dia ${c.fechamento} · Vence dia ${c.vencimento} · Disponível: ${fmt(disp)}</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:11px;color:var(--text-muted)">Melhor dia de compra</div>
-          <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--accent)">Dia ${melhorDia}</div>
-        </div>
-      </div>`;
+    return `<div class="item-row">
+      <div class="item-badge" style="background:${bgColors[i%bgColors.length]}">💳</div>
+      <div class="item-info"><div class="item-name">${c.nome}</div><div class="item-sub">Fecha dia ${c.fechamento} · Vence dia ${c.vencimento} · Disponível: ${fmt(disp)}</div></div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:var(--text-muted)">Melhor dia de compra</div>
+        <div style="font-family:'DM Mono',monospace;font-size:18px;font-weight:600;color:var(--accent)">Dia ${melhorDia}</div>
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ═══════════════════════════════════════════
-// INICIALIZAÇÃO
-// ═══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-  // Dados de exemplo pré-carregados para ajudar a começar
-  contas = [
-    { nome: 'Aluguel', valor: 800, dia: 5, cat: 'moradia', status: 'pendente', mes: 5, ano: 2026 },
-    { nome: 'Conta de Luz', valor: 120, dia: 12, cat: 'energia', status: 'pago', mes: 5, ano: 2026 },
-    { nome: 'Internet', valor: 99.90, dia: 15, cat: 'internet', status: 'pendente', mes: 5, ano: 2026 },
-    { nome: 'Plano de Saúde', valor: 180, dia: 8, cat: 'saude', status: 'pendente', mes: 5, ano: 2026 },
-  ];
-  receitas = [
-    { fonte: 'clinica', desc: 'Salário Clínica', esperado: 1800, recebido: 1800, dia: 5, mes: 5, ano: 2026 },
-    { fonte: 'bico1', desc: 'Semana 1 e 2 — Cuidadora', esperado: 600, recebido: 300, dia: 15, mes: 5, ano: 2026 },
-    { fonte: 'bico2', desc: 'Semana 3 e 4 — Cuidadora', esperado: 600, recebido: 0, dia: 28, mes: 5, ano: 2026 },
-  ];
-  cartoes = [
-    { nome: 'Nubank', limite: 2000, usado: 450, fechamento: 20, vencimento: 5 },
-    { nome: 'Itaú', limite: 1500, usado: 200, fechamento: 15, vencimento: 1 },
-    { nome: 'Bradesco', limite: 3000, usado: 800, fechamento: 10, vencimento: 25 },
-    { nome: 'C6 Bank', limite: 1000, usado: 120, fechamento: 5, vencimento: 20 },
-  ];
   renderAll();
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 });
 </script>
 </body>

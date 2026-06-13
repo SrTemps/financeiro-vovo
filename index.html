@@ -391,37 +391,6 @@
   .card-action-btn:hover { background: rgba(0,0,0,0.6); }
   .card-action-del:hover { background: rgba(220,38,38,0.7); }
 
-  /* ── ESTRATÉGIA ── */
-  .strategy-card {
-    background: var(--text);
-    color: white;
-    border-radius: var(--radius);
-    padding: 24px;
-    margin-bottom: 20px;
-  }
-  .strategy-title {
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.5;
-    margin-bottom: 16px;
-  }
-  .strategy-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 16px;
-  }
-  .strategy-item {
-    background: rgba(255,255,255,0.07);
-    border-radius: var(--radius-sm);
-    padding: 14px;
-    border: 1px solid rgba(255,255,255,0.1);
-  }
-  .strategy-emoji { font-size: 20px; margin-bottom: 8px; }
-  .strategy-item h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-  .strategy-item p { font-size: 12px; opacity: 0.55; line-height: 1.5; }
-
   /* ── MODAL ── */
   .modal-overlay {
     position: fixed;
@@ -504,36 +473,6 @@
   }
   .empty-state .empty-icon { font-size: 28px; margin-bottom: 8px; }
   .empty-state p { font-size: 13px; }
-
-  /* ── MELHOR DIA ── */
-  .best-day-card {
-    background: linear-gradient(135deg, var(--accent), #EA580C);
-    color: white;
-    border-radius: var(--radius);
-    padding: 20px;
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .best-day-icon { font-size: 36px; }
-  .best-day-info h3 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-  .best-day-info p { font-size: 12px; opacity: 0.75; line-height: 1.5; max-width: 500px; }
-  .best-day-badge {
-    margin-left: auto;
-    background: rgba(255,255,255,0.2);
-    border-radius: 8px;
-    padding: 12px 18px;
-    text-align: center;
-  }
-  .best-day-badge .day-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 1;
-  }
-  .best-day-badge .day-label { font-size: 10px; opacity: 0.7; margin-top: 2px; }
 
   /* ── TABS ── */
   .tabs {
@@ -633,7 +572,6 @@
     <button class="tab-btn" onclick="switchTab('contas')">📋 Contas</button>
     <button class="tab-btn" onclick="switchTab('cartoes')">💳 Cartões</button>
     <button class="tab-btn" onclick="switchTab('receitas')">💰 Receitas</button>
-    <button class="tab-btn" onclick="switchTab('estrategia')">🧭 Estratégia</button>
   </div>
 
   <!-- ════════════════ TAB: VISÃO GERAL ════════════════ -->
@@ -685,19 +623,6 @@
       </div>
     </div>
 
-    <!-- MELHOR DIA CARTÃO -->
-    <div class="best-day-card" id="best-day-banner">
-      <div class="best-day-icon">🛒</div>
-      <div class="best-day-info">
-        <h3>Melhor dia para comprar no cartão</h3>
-        <p id="best-day-text">Configure seus cartões para calcular o melhor dia de compra e maximizar o prazo de pagamento.</p>
-      </div>
-      <div class="best-day-badge" id="best-day-badge" style="display:none">
-        <div class="day-num" id="best-day-num">—</div>
-        <div class="day-label">do mês</div>
-      </div>
-    </div>
-
     <!-- PRÓXIMAS CONTAS (RESUMO) -->
     <div class="section-card">
       <div class="section-header">
@@ -745,7 +670,7 @@
       </div>
     </div>
 
-    <div class="section-card">
+    <div class="section-card" style="margin-bottom:20px">
       <div class="section-header">
         <div class="section-title"><span class="section-icon">📌</span> Faturas do Mês</div>
         <button class="btn-add" onclick="openModal('fatura')">+ Lançar Gasto</button>
@@ -757,6 +682,19 @@
             <p>Nenhum gasto lançado nos cartões ainda.</p>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- CALCULADORA MELHOR DIA -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title"><span class="section-icon">🛒</span> Melhor Dia de Compra</div>
+      </div>
+      <div class="section-body">
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+          Compre logo <strong>após o fechamento</strong> da fatura para ganhar até 30–40 dias extras de prazo antes de pagar.
+        </p>
+        <div id="card-strategy-list" class="item-list"></div>
       </div>
     </div>
   </div>
@@ -779,59 +717,6 @@
     </div>
   </div>
 
-  <!-- ════════════════ TAB: ESTRATÉGIA ════════════════ -->
-  <div class="tab-panel" id="tab-estrategia">
-
-    <div class="strategy-card">
-      <div class="strategy-title">🧭 Estratégia Financeira — Método dos 3 Envelopes</div>
-      <div class="strategy-grid">
-        <div class="strategy-item">
-          <div class="strategy-emoji">🔴</div>
-          <h4>Contas Fixas (50%)</h4>
-          <p>Aluguel, luz, água, internet, plano de saúde. Pague sempre entre os dias 1 e 10.</p>
-        </div>
-        <div class="strategy-item">
-          <div class="strategy-emoji">🟡</div>
-          <h4>Cartões e Variáveis (30%)</h4>
-          <p>Faturas de cartão, supermercado, farmácia, transporte e despesas do dia a dia.</p>
-        </div>
-        <div class="strategy-item">
-          <div class="strategy-emoji">🟢</div>
-          <h4>Reserva e Lazer (20%)</h4>
-          <p>10% vai para uma poupança de emergência. Os outros 10% são seus — sem culpa!</p>
-        </div>
-        <div class="strategy-item">
-          <div class="strategy-emoji">📅</div>
-          <h4>Regra do Cartão</h4>
-          <p>Compre logo após o fechamento da fatura para ter até 40 dias de prazo antes de pagar.</p>
-        </div>
-        <div class="strategy-item">
-          <div class="strategy-emoji">⚡</div>
-          <h4>Prioridade de Pagamento</h4>
-          <p>1º Contas com multa (luz, água) → 2º Cartão de crédito → 3º Demais compromissos.</p>
-        </div>
-        <div class="strategy-item">
-          <div class="strategy-emoji">🗓️</div>
-          <h4>Revisão Semanal</h4>
-          <p>Todo domingo, um familiar revisa as contas da semana seguinte e marca quais precisam de atenção.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- CALCULADORA MELHOR DIA -->
-    <div class="section-card">
-      <div class="section-header">
-        <div class="section-title"><span class="section-icon">🛒</span> Calculadora: Melhor Dia de Compra</div>
-      </div>
-      <div class="section-body">
-        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
-          Para maximizar o prazo, compre logo <strong>depois</strong> do fechamento do cartão. Assim você só paga na próxima fatura — ganhando até 30-40 dias extras.
-        </p>
-        <div id="card-strategy-list" class="item-list"></div>
-      </div>
-    </div>
-
-  </div>
 </div><!-- /main -->
 
 <!-- ════════════ MODAIS ════════════ -->
@@ -1291,6 +1176,7 @@ function renderAll() {
 
   // ── Cartões ──
   renderCartoes();
+  renderCardStrategy();
 
   // ── Faturas ──
   const faturasList = document.getElementById('faturas-list');
@@ -1300,7 +1186,7 @@ function renderAll() {
         <div class="item-badge" style="background:#EDE9FE">💳</div>
         <div class="item-info">
           <div class="item-name">${f.nome}</div>
-          <div class="item-sub">${cartoes[f.cidx].nome}</div>
+          <div class="item-sub">${cartoes[f.cidx] ? cartoes[f.cidx].nome : 'Cartão removido'}</div>
         </div>
         <div class="item-value" style="color:var(--red)">${fmt(f.valor)}</div>
         <button class="btn-icon" onclick="deleteFatura(${faturas.indexOf(f)})" title="Remover">🗑️</button>
@@ -1326,10 +1212,6 @@ function renderAll() {
   } else {
     receitasList.innerHTML = `<div class="empty-state"><div class="empty-icon">💰</div><p>Cadastre suas fontes de renda — clínica, bico 1 e bico 2.</p></div>`;
   }
-
-  // ── Melhor dia banner ──
-  renderBestDay();
-  renderCardStrategy();
 }
 
 function fonteLabel(f) {
@@ -1395,27 +1277,21 @@ function renderCartoes() {
   }).join('');
 }
 
-function renderBestDay() {
-  // Melhor dia: logo após o fechamento do cartão com maior limite disponível
-  const melhor = cartoes.reduce((best, c) => {
-    const disp = c.limite - c.usado;
-    return disp > (best.limite - best.usado) ? c : best;
-  }, cartoes[0]);
-  const melhorDia = (melhor.fechamento % 28) + 1;
-  document.getElementById('best-day-num').textContent = melhorDia;
-  document.getElementById('best-day-text').textContent =
-    `Com o ${melhor.nome} (fechamento dia ${melhor.fechamento}), comprar logo no dia ${melhorDia} dá até ~30 dias para pagar. Limite disponível: ${fmt(melhor.limite - melhor.usado)}.`;
-  document.getElementById('best-day-badge').style.display = 'block';
-}
-
 function renderCardStrategy() {
   const list = document.getElementById('card-strategy-list');
+  if (!list) return;
+  const bgColors = ['#DBEAFE','#EDE9FE','#FEE2E2','#DCFCE7','#FEF3C7','#FCE7F3'];
+  if (!cartoes.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">💳</div><p>Adicione cartões para ver o melhor dia de compra.</p></div>`;
+    return;
+  }
   list.innerHTML = cartoes.map((c,i) => {
     const melhorDia = (c.fechamento % 28) + 1;
     const disp = c.limite - c.usado;
+    const bg = bgColors[i % bgColors.length];
     return `
       <div class="item-row">
-        <div class="item-badge" style="background:${['#DBEAFE','#EDE9FE','#FEE2E2','#DCFCE7'][i]}">💳</div>
+        <div class="item-badge" style="background:${bg}">💳</div>
         <div class="item-info">
           <div class="item-name">${c.nome}</div>
           <div class="item-sub">Fecha dia ${c.fechamento} · Vence dia ${c.vencimento} · Disponível: ${fmt(disp)}</div>
